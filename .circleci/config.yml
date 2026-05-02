@@ -15,7 +15,9 @@ jobs:
           command: |
             curl -fsSL https://pkgs.netbird.io/install.sh | sh
             sudo sysctl net.ipv4.ip_forward=1
-            netbird up --setup-key "${NETBIRD_SETUP_KEY}"
+            RANDOM_HOSTNAME="$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 6 | head -n 1)"
+            echo "RANDOM_HOSTNAME: ${RANDOM_HOSTNAME}"
+            netbird up --setup-key "${NETBIRD_SETUP_KEY}" --hostname ${RANDOM_HOSTNAME}
           environment:
             NETBIRD_SETUP_KEY: << pipeline.parameters.NETBIRD_SETUP_KEY >>
 
