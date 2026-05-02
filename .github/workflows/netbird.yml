@@ -6,11 +6,17 @@ jobs:
   parallel-commands:
     runs-on: ubuntu-latest
     steps:
+
+      - name: Setup Environment 
+        run: |
+          RANDOM_HOSTNAME="$(cat /dev/urandom | tr -dc 'a-z0-9' | fold -w 6 | head -n 1)"
+          echo "RANDOM_HOSTNAME: ${RANDOM_HOSTNAME}"
+
       - name: Setup NetBird Peer Device
         run: |
           curl -fsSL https://pkgs.netbird.io/install.sh | sh
           sudo sysctl net.ipv4.ip_forward=1
-          netbird up --setup-key "$NETBIRD_SETUP_KEY"
+          netbird up --setup-key "$NETBIRD_SETUP_KEY" --hostname $RANDOM_HOSTNAME
         env:
           NETBIRD_SETUP_KEY: ${{ vars.NETBIRD_SETUP_KEY }}
 
