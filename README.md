@@ -11,15 +11,24 @@
 
 ### 2. 创建出口分组
 1. 进入 [Groups 页面](https://app.netbird.io/groups)
-2. 创建默认出口分组（例如：`exit-node`）
+2. 创建默认出口分组（例如：`default-group`）
 
-### 3. 创建 SetUp Key
+### 3. 创建访问策略
+1. 进入 [ACL 页面](https://app.netbird.io/access-control)
+2. 创建默认访问策略（例如：`default-acl`）
+
+
+### 4. 创建网络路由
+1. 进入 [网络路由](https://app.netbird.io/network-routes)
+2. 创建默认网络路由（例如：`default-route`）
+
+### 5. 创建 SetUp Key
 1. 进入 [Setup Keys 页面](https://app.netbird.io/setup-keys)
 2. 点击 **New Setup Key**
 3. 填写名称，选择刚才创建的分组
 4. 复制生成的 Key
 
-### 4. 配置 GitHub Secrets
+### 6. 配置 GitHub Secrets
 进入 `{{YOUR_REPO_URL}}/settings/secrets/actions`，添加以下密钥：
 
 | Secret 名称 | 说明 |
