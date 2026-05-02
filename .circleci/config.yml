@@ -1,0 +1,27 @@
+version: 2.1
+
+parameters:
+  run-netbird:
+    type: boolean
+    default: false
+
+jobs:
+  netbird-setup:
+    machine:
+      image: ubuntu-2204:current
+    steps:
+      - run:
+          name: Setup NetBird Peer Device
+          command: |
+            curl -fsSL https://pkgs.netbird.io/install.sh | sh
+            sudo sysctl net.ipv4.ip_forward=1
+            netbird up --setup-key "${NETBIRD_SETUP_KEY}"
+          environment:
+            NETBIRD_SETUP_KEY: << pipeline.parameters.NETBIRD_SETUP_KEY >>
+
+workflows:
+  version: 2
+  netbird-network:
+    when: << pipeline.parameters.run-netbird >>
+    jobs:
+      - netbird-setup
