@@ -1,0 +1,32 @@
+name: Tailscale Network Setting
+on:
+  workflow_dispatch:
+
+jobs:
+  parallel-commands:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+
+      - name: Enable IPv6 Forward
+        run: |
+          sudo sysctl -w net.ipv6.conf.all.forwarding=1
+          sudo sysctl -w net.ipv6.conf.default.forwarding=1
+
+      - name: Setup Tailscale Device
+        run: curl -fsSL https://tailscale.com/install.sh | sh
+  
+      - name: Run Tailscale Service
+        env:
+          TAILSCALE_AUTHKEY: ${{ secrets.TAILSCALE_AUTHKEY }}
+        run: |
+          echo $TAILSCALE_AUTHKEY
+          sudo tailscale up \
+            --authkey="${TAILSCALE_AUTHKEY}" \
+            --hostname=github-runner-${{ github.run_id }} \
+            --advertise-exit-node
+
+      - name: Setup tmate Session
+        uses: mxschmitt/action-tmate@v3
+        timeout-minutes: 30
+
