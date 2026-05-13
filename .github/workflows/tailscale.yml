@@ -1,15 +1,21 @@
 name: Tailscale Network Setting
 on:
   workflow_dispatch:
+    inputs:
+      tailscale_running_time:
+        description: 'tailscale running minute'
+        required: true
+        default: 60
+        type: number
 
 jobs:
   parallel-commands:
     runs-on: ubuntu-latest
-    timeout-minutes: 360
+    timeout-minutes: 60
     steps:
-
-      - name: Enable IPv6 Forward
+      - name: Base Setting
         run: |
+          echo "runner will be close after ${{ inputs.tailscale_running_time }} minute"
           sudo sysctl -w net.ipv6.conf.all.forwarding=1
           sudo sysctl -w net.ipv6.conf.default.forwarding=1
 
@@ -23,10 +29,11 @@ jobs:
           echo $TAILSCALE_AUTHKEY
           sudo tailscale up \
             --authkey="${TAILSCALE_AUTHKEY}" \
-            --hostname=github-runner-${{ github.run_id }} \
+            --hostname=github-runner-${{ github.repository_owner }}-${{ github.run_id }} \
             --advertise-exit-node
 
       - name: Setup tmate Session
         uses: mxschmitt/action-tmate@v3
-        timeout-minutes: 360
+        timeout-minutes: ${{ inputs.tailscale_running_time }}
+       
 
